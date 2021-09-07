@@ -1,0 +1,76 @@
+version: "3"
+
+services:
+  db:
+    image: postgres
+    container_name: "postgres"
+    env_file:
+      - .env
+    volumes:
+      - "postgres_data:/var/lib/postgresql/data"
+    ports:
+      - 5432:5432
+  
+  spark_master:
+    container_name: "master"
+    build: 
+      context: "./master"
+      dockerfile: Dockerfile
+    volumes: 
+      - "./files:/files"
+    entrypoint: /master/entrypoint.sh 
+    env_file: 
+      - .env
+    
+  spark_woker1:
+    container_name: "woker_1"
+    build:
+      context: ./woker
+      dockerfile: Dockerfile
+    entrypoint: /woker/entrypoint.sh 
+    volumes: 
+      - "./files:/files"
+    env_file:
+      - .env
+    depends_on:
+      - spark_master
+
+  spark_woker2:
+    container_name: "woker_2"
+    build:
+      context: ./woker
+      dockerfile: Dockerfile
+    entrypoint: /woker/entrypoint.sh 
+    volumes: 
+      - "./files:/files"
+    env_file:
+      - .env
+    depends_on:
+      - spark_master
+
+  scheduler:
+      image: apache/airflow:1.10.14-python3.8
+      container_name: "argus_scheduler" 
+      entrypoint: /airflow/scripts/entrypoint_scheduler.sh
+      depends_on:
+          - db
+      env_file:
+          - .env
+      volumes:
+          - ./airflow:/airflow
+  webserver:
+      image: apache/airflow:1.10.14-python3.8
+      container_name: "airflow_webserver" 
+      entrypoint: /airflow/scripts/entrypoint.sh
+      depends_on:
+          - db
+          - scheduler
+      env_file:
+          - .env
+      volumes:
+          - ./airflow:/airflow
+      ports:
+          - "8080:8080"
+
+volumes: 
+  postgres_data:

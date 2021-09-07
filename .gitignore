@@ -1,0 +1,5 @@
+files/*
+env/*
+.vscode/
+*.pyc
+.env
