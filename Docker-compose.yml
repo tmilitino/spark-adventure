@@ -3,7 +3,7 @@ version: "3"
 services:
   db:
     image: postgres
-    container_name: "postgres"
+    container_name: "postgres_spark"
     env_file:
       - .env
     volumes:
@@ -50,25 +50,26 @@ services:
 
   scheduler:
       image: apache/airflow:1.10.14-python3.8
-      container_name: "argus_scheduler" 
-      entrypoint: /airflow/scripts/entrypoint_scheduler.sh
+      container_name: "airflow_scheduler" 
+      entrypoint: /opt/airflow/scripts/entrypoint_scheduler.sh
       depends_on:
           - db
       env_file:
           - .env
       volumes:
-          - ./airflow:/airflow
+          - ./airflow:/opt/airflow
+
   webserver:
       image: apache/airflow:1.10.14-python3.8
       container_name: "airflow_webserver" 
-      entrypoint: /airflow/scripts/entrypoint.sh
+      entrypoint: /opt/airflow/scripts/entrypoint_webserver.sh
       depends_on:
           - db
           - scheduler
       env_file:
           - .env
       volumes:
-          - ./airflow:/airflow
+          - ./airflow:/opt/airflow
       ports:
           - "8080:8080"
 
