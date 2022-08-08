@@ -1,20 +1,26 @@
-FROM openjdk:8-jdk-alpine
+FROM openjdk:11-jdk
 
-RUN apk --update add wget tar bash coreutils procps openssl
+RUN mkdir /woker
+RUN mkdir /opt/spark
 
-ENV PYTHONUNBUFFERED=1
-RUN apk add --update --no-cache python3 && ln -sf python3 /usr/bin/python
-RUN python3 -m ensurepip
-RUN pip3 install --no-cache --upgrade pip setuptools
+ENV SPARK_HOME /opt/spark
+
+RUN apt update
+
+RUN  apt install -y python3-pip
+
+RUN apt install -y wget
 
 RUN wget https://archive.apache.org/dist/spark/spark-3.1.2/spark-3.1.2-bin-hadoop3.2.tgz
 
 RUN tar zxvf spark-3.1.2-bin-hadoop3.2.tgz
-RUN ls
-RUN mv spark-3.1.2-bin-hadoop3.2/ /opt/spark
+
+RUN mv spark-3.1.2-bin-hadoop3.2/* /opt/spark/
+
+ENV PATH=$PATH:$SPARK_HOME/bin:$SPARK_HOME/sbin
+
+RUN export SPARK_HOME
 
 RUN python3 -m pip install pyspark
-
-RUN mkdir /woker
 
 COPY ./entrypoint.sh /woker/entrypoint.sh

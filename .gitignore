@@ -3,8 +3,12 @@ env/*
 .vscode/
 *.pyc
 .env
+
+
 airflow/logs/scheduler/latest
 airflow/unittests.cfg
 airflow/airflow.cfg
 airflow/airflow-webserver.pid
 airflow/logs/*
+
+notebook/files/*

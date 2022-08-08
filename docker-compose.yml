@@ -1,15 +1,15 @@
 version: "3"
 
 services:
-  db:
-    image: postgres
-    container_name: "postgres_spark"
-    env_file:
-      - .env
-    volumes:
-      - "postgres_data:/var/lib/postgresql/data"
-    ports:
-      - 5432:5432
+  # db:
+  #   image: postgres
+  #   container_name: "postgres_spark"
+  #   env_file:
+  #     - .env
+  #   volumes:
+  #     - "postgres_data:/var/lib/postgresql/data"
+  #   ports:
+  #     - 5432:5432
   
   spark_master:
     container_name: "master"
@@ -73,5 +73,15 @@ services:
       ports:
           - "8080:8080"
 
-volumes: 
-  postgres_data:
+  notebook:
+    container_name: "notebook" 
+    build:
+      context: ./notebook
+      dockerfile: Dockerfile
+    ports:
+      - "8888:8888"
+    volumes:
+      - ./notebook:/notebook
+
+# volumes: 
+#   postgres_data:

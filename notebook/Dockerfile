@@ -23,13 +23,9 @@ RUN export SPARK_HOME
 
 RUN python3 -m pip install pyspark
 
-COPY ./entrypoint.sh /master/entrypoint.sh
+RUN python3 -m pip install jupyterlab
 
-ENV SPARK_MASTER_PORT 7077
-ENV SPARK_MASTER_WEBUI_PORT 8080
-ENV SPARK_MASTER_LOG /spark/logs
-ENV SPARK_EXECUTOR_MEMORY 512m
+WORKDIR /notebook
 
-EXPOSE 80
+CMD jupyter lab --ip=0.0.0.0 --port=8888 --no-browser --allow-root --NotebookApp.token=
 
-WORKDIR /files
