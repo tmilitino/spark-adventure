@@ -12,3 +12,4 @@ airflow/airflow-webserver.pid
 airflow/logs/*
 
 notebook/files/*
+notebook/.ipynb_checkpoints
